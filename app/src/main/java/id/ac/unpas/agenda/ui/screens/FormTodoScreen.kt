@@ -1,5 +1,10 @@
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
+package id.ac.unpas.agenda.ui.screens
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -8,20 +13,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.benasher44.uuid.uuid4
-import id.ac.unpas.agenda.models.Todo
-import id.ac.unpas.agenda.persistences.TodoDao
 import kotlinx.coroutines.launch
 
 @Composable
-fun FormTodoScreen(todoDao: TodoDao) {
+fun FormTodoScreen() {
+    val viewModel = hiltViewModel<TodoViewModel>()
     val scope = rememberCoroutineScope()
 
     val title = remember { mutableStateOf(TextFieldValue("")) }
@@ -119,23 +124,10 @@ fun FormTodoScreen(todoDao: TodoDao) {
             Button(
                 modifier = Modifier.weight(5f),
                 onClick = {
-                    val item = Todo(
-                        uuid4().toString(),
-                        title.value.text,
-                        description.value.text,
-                        "${time.value.text}:${time2.value.text}",
-                        "${date.value.text} ${month.value.text} ${year.value.text}"
-                    )
                     scope.launch {
-                        todoDao.upsert(item)
+                        viewModel.upsert(uuid4().toString(), title.value.text, description.value.text, "${time.value.text}:${time2.value.text}",
+                            "${date.value.text} ${month.value.text} ${year.value.text}")
                     }
-                    title.value = TextFieldValue("")
-                    description.value = TextFieldValue("")
-                    time.value = TextFieldValue("")
-                    time2.value = TextFieldValue("")
-                    date.value = TextFieldValue("")
-                    month.value = TextFieldValue("")
-                    year.value = TextFieldValue("")
                 }
             ) {
                 Text(text = "Simpan")

@@ -2,20 +2,33 @@ package id.ac.unpas.agenda.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Modifier
 import id.ac.unpas.agenda.models.Todo
-import id.ac.unpas.agenda.persistences.TodoDao
+import kotlinx.coroutines.launch
 
 @Composable
-fun ListTodoScreen(todoDao: TodoDao) {
-    val list by todoDao.loadAll().observeAsState(listOf())
+fun ListTodoScreen() {
+    val scope = rememberCoroutineScope()
+    val viewModel = hiltViewModel<TodoViewModel>()
+
+    val list: List<Todo> by viewModel.todos.observeAsState(listOf())
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        list.forEach { todo ->
-            TodoItem(item = todo)
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(list.size) { index ->
+                val item = list[index]
+                TodoItem(item = item) {
+                    scope.launch {
+                        viewModel.delete(it)
+                    }
+                }
+            }
         }
     }
 }
