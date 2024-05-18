@@ -88,4 +88,6 @@ dependencies {
     implementation(libs.sandwich)
     implementation(libs.sandwich.retrofit)
     implementation(libs.whatif)
+
+    implementation(libs.navigation.compose)
 }

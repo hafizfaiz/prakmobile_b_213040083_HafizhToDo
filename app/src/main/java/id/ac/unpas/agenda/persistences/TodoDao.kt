@@ -32,6 +32,9 @@ interface TodoDao {
     @Query("delete from todo where id = :id")
     suspend fun delete(id: String)
 
+    @Query("select * from todo where id = :id")
+    suspend fun find(id: String): Todo?
+
     @Delete
     suspend fun delete(item: Todo)
 }

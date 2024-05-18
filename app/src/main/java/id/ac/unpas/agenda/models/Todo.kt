@@ -16,4 +16,3 @@ data class Todo(
     val time: String,
     val dueDate: String
 )
-

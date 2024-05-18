@@ -5,7 +5,6 @@ import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
-import com.skydoves.whatif.whatIf
 import com.skydoves.whatif.whatIfNotNull
 import id.ac.unpas.agenda.models.Todo
 import id.ac.unpas.agenda.networks.TodoApi
@@ -103,4 +102,6 @@ class TodoRepository @Inject constructor(private val api: TodoApi, private val d
                 onError(message())
             }
     }
+
+    suspend fun find(id: String) = dao.find(id)
 }
